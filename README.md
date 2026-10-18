@@ -5,6 +5,7 @@
 打开 [`index.html`](index.html) 即可游玩，无需服务器、无需安装依赖。推荐 Chrome / Edge。
 
 - GitHub：[NagasakiSaki/chemistry-duel](https://github.com/NagasakiSaki/chemistry-duel)
+- 在线试玩：[nagasakisaki.github.io/chemistry-duel](https://nagasakisaki.github.io/chemistry-duel/)
 - 开发文档：[DEVELOPMENT.md](DEVELOPMENT.md)
 - 完整卡表：[CARD_LIST.md](CARD_LIST.md)；卡组构成：[DECK_LISTS.md](DECK_LISTS.md)；化学家：[CHEMISTS.md](CHEMISTS.md)
 

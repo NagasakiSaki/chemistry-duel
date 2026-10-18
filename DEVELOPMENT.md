@@ -552,11 +552,14 @@ node test/simulate.js
 
 ## 12. 发布到 GitHub
 
-仓库已创建：
+仓库与在线站点：
 
 ```text
 https://github.com/NagasakiSaki/chemistry-duel
+https://nagasakisaki.github.io/chemistry-duel/
 ```
+
+GitHub Pages 已启用，来源为 `main` 分支根目录；推送后会自动重新构建。
 
 ### 首次推送
 
@@ -579,12 +582,11 @@ git push
 
 ### GitHub Pages
 
-仓库是纯静态站点，可以直接启用 Pages：
+仓库是纯静态站点，Pages 已配置为 `main` 分支根目录。更新 `main` 后会自动重新构建，访问：
 
-1. Settings → Pages；
-2. Source 选择 `Deploy from a branch`；
-3. Branch 选择 `main`，目录选择 `/ (root)`；
-4. 保存后访问 `https://nagasakisaki.github.io/chemistry-duel/`。
+```text
+https://nagasakisaki.github.io/chemistry-duel/
+```
 
 `file://` 与 `https://` 都能运行；`localStorage` 在两者下分别独立。
 
