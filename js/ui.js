@@ -279,13 +279,7 @@
           ${legal ? '' : '<span class="warn">未完成</span>'}
         </div>
       </article>`;
-    }).join('') + `<article class="deck-card new-deck-card" data-new-deck>
-      <div class="deck-icon">＋</div>
-      <div class="deck-sub">DECK BUILDER</div>
-      <h3>新建卡组</h3>
-      <p>自由选择 40 张主卡组与最多 6 张额外卡组。</p>
-      <div class="deck-composition"><span>自由构筑</span><span>本地保存</span></div>
-    </article>`;
+    }).join('');
 
     const cg = $('#chemist-grid');
     if (cg) {
