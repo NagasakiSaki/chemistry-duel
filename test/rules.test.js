@@ -100,6 +100,11 @@ test('draw schedule', () => {
   g.turn = 5; assert.strictEqual(g.drawPerTurn(), 2);
   g.turn = 9; assert.strictEqual(g.drawPerTurn(), 3);
   g.turn = 13; assert.strictEqual(g.drawPerTurn(), 3);
+  g.turn = 4;
+  g.players[0].hand.length = 0;
+  for (let i = 0; i < 5; i++) g.players[0].deck.push(makeCard(CARDS.H2, 0));
+  g.beginTurn();
+  assert.strictEqual(g.players[0].hand.length, 2); // turn 5 => 抽 2
   g.turn = 6; assert.strictEqual(g.fusionLimit(), 1);
   g.turn = 7; assert.strictEqual(g.fusionLimit(), 2);
   g.turn = 13; assert.strictEqual(g.fusionLimit(), 3);
