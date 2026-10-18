@@ -10,7 +10,7 @@ const DECKS = CONTENT.decks;
 const ORDER = CONTENT.deckOrder;
 
 let md = '# 化学怪兽决斗 · 预设卡组\n\n';
-md += '三套卡组均为 **40 张主卡组 + 6 张额外卡组**，同一张卡最多 3 张。\n\n';
+md += '三套卡组均为 **30 张主卡组 + 6 张额外卡组**，同一张卡最多 3 张。\n\n';
 
 for (const key of ORDER) {
   const d = DECKS[key];
@@ -18,7 +18,7 @@ for (const key of ORDER) {
   for (const id of d.main) counts[id] = (counts[id] || 0) + 1;
   md += `## ${d.name} · ${d.subtitle}\n\n`;
   md += `> ${d.desc}\n\n`;
-  md += `### 主卡组（40）\n\n`;
+  md += `### 主卡组（${d.main.length}）\n\n`;
   for (const [id, n] of Object.entries(counts)) {
     const c = CARDS[id];
     if (!c) continue;
@@ -27,7 +27,7 @@ for (const key of ORDER) {
       : (c.kind === 'spell' ? '魔法' : '陷阱');
     md += `- ${n} × **${c.name}**（${c.tags.join('/') || '—'} · ${stats}）\n`;
   }
-  md += `\n### 额外卡组（6）\n\n`;
+  md += `\n### 额外卡组（${d.extra.length}）\n\n`;
   for (const id of d.extra) {
     const c = CARDS[id];
     if (!c) continue;

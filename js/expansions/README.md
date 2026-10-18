@@ -36,7 +36,7 @@ ChemContent.registerExpansion({
 ## 约定
 
 - 卡牌 ID、卡组 ID、化学家 ID 全局唯一；重复注册会直接抛错。
-- 主卡组 40 张、额外卡组 6 张，同名卡最多 3 张。
+- 主卡组 20–30 张、额外卡组 6–10 张，同名卡最多 3 张。
 - 新卡效果使用 `js/engine.js` 的公共 API（`g.draw`、`g.burn`、`g.heal`、
   `g.destroyMonster`、`g.specialSummonFromGY` 等），不要直接改 UI DOM。
 - 新化学家可以在 `passive` 中使用引擎已支持的字段，或通过 `actives[].activate`

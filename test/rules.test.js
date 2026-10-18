@@ -87,15 +87,38 @@ test('neutralization', () => {
   assert.strictEqual(g.players[1].lp, 8500); // 中和 500
 });
 
-/* 2.5 回合抽 2 张 */
-test('draw two at turn start', () => {
+/* 2.5 抽卡 / 融合次数随回合增加 */
+test('draw schedule', () => {
   const g = baseGame();
   g.players[0].hand.length = 0;
   for (let i = 0; i < 5; i++) g.players[0].deck.push(makeCard(CARDS.H2, 0));
   const before = g.players[0].deck.length;
   g.beginTurn();
-  assert.strictEqual(g.players[0].hand.length, 2);
-  assert.strictEqual(g.players[0].deck.length, before - 2);
+  assert.strictEqual(g.players[0].hand.length, 1); // turn 3 => 抽 1
+  assert.strictEqual(g.players[0].deck.length, before - 1);
+  g.turn = 4; assert.strictEqual(g.drawPerTurn(), 1);
+  g.turn = 5; assert.strictEqual(g.drawPerTurn(), 2);
+  g.turn = 9; assert.strictEqual(g.drawPerTurn(), 3);
+  g.turn = 13; assert.strictEqual(g.drawPerTurn(), 3);
+  g.turn = 6; assert.strictEqual(g.fusionLimit(), 1);
+  g.turn = 7; assert.strictEqual(g.fusionLimit(), 2);
+  g.turn = 13; assert.strictEqual(g.fusionLimit(), 3);
+});
+
+/* 2.6 多次融合 */
+test('multiple fusion summons at turn 7', () => {
+  const g = baseGame();
+  g.turn = 7;
+  g.phase = 'main';
+  g.players[0].extra.push(makeCard(CARDS.aqua_regia_fusion, 0));
+  g.players[0].extra.push(makeCard(CARDS.aqua_regia_fusion, 0));
+  for (let i = 0; i < 4; i++) hand(g, 0, 'HCl');
+  assert.strictEqual(g.fusionLimit(), 2);
+  assert(g.fusionSummon(0, 0).ok);
+  assert(g.fusionSummon(0, 0).ok);
+  assert.strictEqual(g.fusionUsed, 2);
+  assert.strictEqual(g.players[0].monsters.filter(Boolean).length, 2);
+  assert.strictEqual(g.fusionSummon(0, 0).ok, false);
 });
 
 /* 3. 融合：手牌酸 + 碱 */

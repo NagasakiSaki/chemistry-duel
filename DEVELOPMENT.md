@@ -18,7 +18,7 @@
 - 化学标签驱动融合素材与全局反应；
 - 化学家提供被动能力与每场一次的主动技能；
 - 自由构筑卡组与本地保存；
-- 每回合抽 **2** 张（先攻第 1 回合不抽）。
+- 抽牌与融合次数随回合数递增：第 2–4 回合抽 1，第 5–8 回合抽 2，第 9 回合起抽 3；融合第 1–6 回合 1 次，第 7–12 回合 2 次，第 13 回合起 3 次。
 
 项目刻意采用 **Vanilla JS + 传统 `<script>`**：直接双击 `index.html` 即可运行，也便于作为静态站点托管到 GitHub Pages。
 
@@ -257,8 +257,8 @@ ui.js
   style: '腐蚀 / 爆发',
   tagline: '...',
   desc: '...',
-  main: ['H2SO4', ...],   // 40 张
-  extra: ['aqua_regia_fusion', ...] // 0–6 张
+  main: ['H2SO4', ...],   // 20–30 张
+  extra: ['aqua_regia_fusion', ...] // 6–10 张
 }
 ```
 
@@ -273,8 +273,8 @@ value: [ { id, name, main: [...], extra: [...], updatedAt, custom: true, ... } ]
 
 规则：
 
-- 主卡组必须正好 40 张；
-- 额外 0–6 张，且只能放 `kind === 'fusion'`；
+- 主卡组 20–30 张；
+- 额外 6–10 张，且只能放 `kind === 'fusion'`；
 - 同名卡最多 3 张（主 + 额外合计）；
 - 自定义卡组在标题界面可编辑 / 删除；
 - AI 只从预设卡组中选择，避免使用玩家未完成的自定义卡组。
@@ -299,7 +299,7 @@ value: [ { id, name, main: [...], extra: [...], updatedAt, custom: true, ... } ]
 beginTurn();
 // turn++
 // phase = 'main'
-// 先攻第 1 回合不抽卡；其余回合 draw(active, 2)
+// 先攻第 1 回合不抽卡；其余回合 draw(active, drawPerTurn())
 // 重置 hasAttacked / positionChanged / skillTurnUses
 // 触发 onTurnStart
 ```
@@ -311,7 +311,7 @@ beginTurn();
 - `attack(p, attackerZone, targetZone|null)`
 - `battleOutcome(attacker, target)` 提供纯计算，可供 AI 使用。
 - 战斗结果处理：腐蚀、中和、贯通、战斗免疫、战斗反伤。
-- 每只怪兽每回合攻击 1 次；每回合通常召唤 1 次；融合 1 次。
+- 每只怪兽每回合攻击 1 次；每回合通常召唤 1 次；融合次数由 `fusionLimit()` 决定。
 
 ### 6.4 陷阱窗口
 
@@ -391,7 +391,7 @@ ChemContent.validate();
 2. 在 `index.html` 中于 `content.js` 之后、`ui.js` 之前加载；
 3. 使用全局唯一 ID；
 4. 不依赖 UI DOM；
-5. 卡组必须满足 40 主 + 0–6 额外。
+5. 卡组必须满足 20–30 主 + 6–10 额外。
 
 模板：`js/expansions/_template.js`。  
 详细约定：`js/expansions/README.md`。
@@ -454,8 +454,8 @@ node test/gen-chemists.js
 关键约束：
 
 - `builderAdd` 按卡牌种类自动进主卡组或额外；
-- 主卡组上限 40，额外上限 6，同名上限 3；
-- `isDeckLegal` 要求主卡组正好 40；
+- 主卡组 20–30，额外 6–10，同名上限 3；
+- `isDeckLegal` 要求主卡组 20–30、额外 6–10；
 - 保存按钮在未完成时禁用；
 - 添加卡牌时通过 `rerenderBuilder()` 保留卡池/卡组滚动位置；
 - 删除自定义卡组会弹出确认，若删除当前选中卡组则回退到预设「酸雨侵蚀」。
@@ -507,7 +507,7 @@ AI 通过 `g.canActivateSkill` 做合法性检查，因此新增技能只要复�
 ## 10. 测试
 
 ```bash
-node test/rules.test.js     # 13 项规则断言
+node test/rules.test.js     # 14 项规则断言
 node test/effects.test.js   # 135 张卡效果冒烟
 node test/chemists.test.js  # 14 项化学家 / 技能
 node test/simulate.js       # 120 局 AI vs AI
@@ -515,10 +515,10 @@ node test/simulate.js       # 120 局 AI vs AI
 
 当前基线：
 
-- 13 / 13 规则；
+- 14 / 14 规则；
 - 135 / 135 卡效果无异常；
 - 14 / 14 化学家；
-- 120 局 0 运行时错误，平均约 12 个玩家回合。
+- 120 局 0 运行时错误，平均约 8.5 个玩家回合。
 
 ### 添加测试
 

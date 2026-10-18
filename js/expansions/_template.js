@@ -47,8 +47,8 @@
         tagline: '用电子流动撕开对手的防线。',
         desc: '示例扩展卡组。',
         color: '#55e5ff',
-        main: [], // 填入 40 个卡牌 ID
-        extra: [], // 填入 6 个融合怪兽 ID
+        main: [], // 填入 20–30 个卡牌 ID
+        extra: [], // 填入 6–10 个融合怪兽 ID
       }
     },
     deckOrder: ['electro_deck'],

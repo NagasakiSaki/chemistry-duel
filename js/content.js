@@ -124,8 +124,10 @@
       for (const id of deckOrder) {
         const d = decks[id];
         if (!d) { errors.push(`缺少卡组 ${id}`); continue; }
-        if ((d.main || []).length !== 40) errors.push(`卡组 ${id} 主卡组不是 40 张`);
-        if ((d.extra || []).length !== 6) errors.push(`卡组 ${id} 额外卡组不是 6 张`);
+        const mainLen = (d.main || []).length;
+        const extraLen = (d.extra || []).length;
+        if (mainLen < 20 || mainLen > 30) errors.push(`卡组 ${id} 主卡组需为 20–30 张`);
+        if (extraLen < 6 || extraLen > 10) errors.push(`卡组 ${id} 额外卡组需为 6–10 张`);
         for (const cid of [...(d.main || []), ...(d.extra || [])]) {
           if (!cards[cid]) errors.push(`卡组 ${id} 引用了不存在的卡 ${cid}`);
         }

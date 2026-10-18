@@ -97,7 +97,7 @@
       this.first = this.active;
       this.phase = 'main';
       this.winner = null;
-      this.fusionUsed = false;
+      this.fusionUsed = 0;
       this.normalSummonUsed = false;
       this.lastAction = null;
       this.skillUses = { 0: {}, 1: {} };
@@ -417,12 +417,20 @@
     }
 
     /* ---------------- 回合 / 阶段 ---------------- */
+    drawPerTurn() {
+      return Math.min(3, 1 + Math.floor((this.turn - 1) / 4));
+    }
+
+    fusionLimit() {
+      return Math.min(3, 1 + Math.floor((this.turn - 1) / 6));
+    }
+
     beginTurn() {
       if (this.winner !== null) return;
       this.turn++;
       this.phase = 'main';
       this.normalSummonUsed = false;
-      this.fusionUsed = false;
+      this.fusionUsed = 0;
       this.skillTurnUses[this.active] = {};
       for (let p = 0; p < 2; p++) {
         for (const c of this.players[p].monsters) {
@@ -430,7 +438,8 @@
         }
       }
       this.log(`—— 第 ${this.turn} 回合 · ${this.nameOf(this.active)} 的回合 ——`, 'turn');
-      if (this.turn !== 1) this.draw(this.active, 2);
+      if (this.turn !== 1) this.draw(this.active, this.drawPerTurn());
+      this.log(this.turn === 1 ? '本回合：先攻不抽卡，可融合召唤 1 次。' : `本回合：抽 ${this.drawPerTurn()} 张，可融合召唤 ${this.fusionLimit()} 次。`, 'phase');
 
       // 永续陷阱在自己回合开始时自动翻开
       for (const c of this.players[this.active].spells) {
@@ -831,7 +840,7 @@
     }
 
     availableFusions(p) {
-      if (this.winner !== null || p !== this.active || this.phase !== 'main' || this.fusionUsed) return [];
+      if (this.winner !== null || p !== this.active || this.phase !== 'main' || this.fusionUsed >= this.fusionLimit()) return [];
       const out = [];
       this.players[p].extra.forEach((fusion, index) => {
         const mats = this.findFusionMaterials(p, fusion);
@@ -845,7 +854,9 @@
       if (this.winner !== null || p !== this.active || this.phase !== 'main') {
         return { ok: false, reason: '只能在主要阶段融合召唤' };
       }
-      if (this.fusionUsed) return { ok: false, reason: '本回合已融合召唤过' };
+      if (this.fusionUsed >= this.fusionLimit()) {
+        return { ok: false, reason: `本回合融合次数已用完（${this.fusionLimit()} 次）` };
+      }
       const pl = this.players[p];
       const fusion = pl.extra[extraIndex];
       if (!fusion) return { ok: false, reason: '额外卡组没有此卡' };
@@ -877,7 +888,7 @@
       fusion.hasAttacked = false;
       fusion.fusionSummoned = true;
       pl.monsters[z] = fusion;
-      this.fusionUsed = true;
+      this.fusionUsed++;
       this.log(`【融合召唤】${this.nameOf(p)} 将 ${names} 融合，召唤 ${fusion.name}！`, 'fusion');
       this.emit('fusion', { player: p, card: fusion, materials: mats });
       this.triggerSummon(fusion);

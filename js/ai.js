@@ -251,10 +251,14 @@
     if (g.winner !== null || p !== g.active) return;
     await wait(500);
 
-    // 1. 融合
-    const fusion = chooseFusion(g, p);
-    if (fusion) {
-      g.fusionSummon(p, fusion.index);
+    // 1. 融合（随回合数可多次）
+    let fusionSteps = 0;
+    while (g.winner === null && g.fusionUsed < g.fusionLimit() && fusionSteps < 3) {
+      const fusion = chooseFusion(g, p);
+      if (!fusion) break;
+      const r = g.fusionSummon(p, fusion.index);
+      if (!r.ok) break;
+      fusionSteps++;
       await wait(650);
     }
 

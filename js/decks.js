@@ -25,12 +25,12 @@
       color: '#c6ff3d',
       main: build([
         ['H2SO4', 2], ['HCl', 3], ['HNO3', 2], ['HF', 2],
-        ['H2CO3', 1], ['CH3COOH', 1],
-        ['SO2', 2], ['SO3', 2], ['NO2', 2], ['Cl2', 2], ['F2', 1],
+        ['H2CO3', 1],
+        ['SO2', 2], ['SO3', 2], ['NO2', 2], ['Cl2', 1], ['F2', 1],
         ['H2O', 2],
-        ['dilute_hcl', 2], ['conc_h2so4', 2], ['neutralize', 1],
-        ['flame_test', 2], ['oxidizer', 2], ['acid_rain', 2], ['distill', 1],
-        ['precipitate_trap', 2], ['redox_trap', 2], ['fume_hood', 2]
+        ['dilute_hcl', 2], ['conc_h2so4', 2],
+        ['flame_test', 1], ['oxidizer', 1], ['acid_rain', 1],
+        ['precipitate_trap', 1], ['redox_trap', 1], ['fume_hood', 1]
       ]),
       extra: [
         'aqua_regia_fusion', 'h2so3_fusion', 'water_fusion',
@@ -48,12 +48,12 @@
       desc: '碱与盐怪兽拥有极高的守备力，并通过回复 LP、削弱对方、自动发动陷阱来拖垮对手。融合「重晶石」与「氢氧化铯」后几乎无法被战斗突破。',
       color: '#7ad7ff',
       main: build([
-        ['NaOH', 3], ['KOH', 2], ['Ca(OH)2', 2], ['Ba(OH)2', 2],
+        ['NaOH', 3], ['KOH', 2], ['Ca(OH)2', 2], ['Ba(OH)2', 1],
         ['Mg(OH)2', 2], ['Al(OH)3', 2], ['Fe(OH)3', 2], ['NH3', 1],
-        ['NaCl', 2], ['CaCO3', 2], ['BaSO4', 1], ['AgCl', 1],
-        ['neutralize', 2], ['crystallize', 2], ['filter_spell', 2],
-        ['coating', 2], ['strong_base', 2], ['buffer_spell', 2],
-        ['neutralization_pool', 2], ['precipitate_trap', 2], ['eyewash', 2]
+        ['NaCl', 1], ['CaCO3', 2], ['BaSO4', 1], ['AgCl', 1],
+        ['neutralize', 2], ['crystallize', 1], ['filter_spell', 1],
+        ['coating', 1], ['strong_base', 1], ['buffer_spell', 1],
+        ['neutralization_pool', 1], ['precipitate_trap', 1], ['eyewash', 1]
       ]),
       extra: [
         'csoh_fusion', 'baso4_fusion', 'nacl_fusion',
@@ -72,11 +72,11 @@
       color: '#ff8a4c',
       main: build([
         ['O2', 3], ['O3', 1], ['Cl2', 2],
-        ['Mg', 3], ['Al', 3], ['Fe', 2], ['Zn', 2], ['Na', 2],
-        ['K', 1], ['C', 2], ['S', 1],
-        ['combust', 2], ['oxidize', 2], ['catalyst', 2],
-        ['displacement', 2], ['oxidizer', 2], ['distill', 2],
-        ['redox_trap', 2], ['passivation_trap', 2], ['explosion_limit', 2]
+        ['Mg', 3], ['Al', 3], ['Fe', 2], ['Zn', 2], ['Na', 1],
+        ['K', 1], ['C', 1], ['S', 1],
+        ['combust', 2], ['oxidize', 1], ['catalyst', 1],
+        ['displacement', 1], ['oxidizer', 1], ['distill', 1],
+        ['redox_trap', 1], ['passivation_trap', 1], ['explosion_limit', 1]
       ]),
       extra: [
         'co2_fusion', 'rust_fusion', 'water_fusion',

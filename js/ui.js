@@ -155,7 +155,7 @@
       const c = CARDS[id];
       if (!c || c.kind === 'fusion') continue;
       if ((counts[id] || 0) >= 3) continue;
-      if (main.length >= 40) break;
+      if (main.length >= 30) break;
       counts[id] = (counts[id] || 0) + 1;
       main.push(id);
     }
@@ -163,7 +163,7 @@
       const c = CARDS[id];
       if (!c || c.kind !== 'fusion') continue;
       if ((counts[id] || 0) >= 3) continue;
-      if (extra.length >= 6) break;
+      if (extra.length >= 10) break;
       counts[id] = (counts[id] || 0) + 1;
       extra.push(id);
     }
@@ -222,8 +222,8 @@
 
   function isDeckLegal(deck) {
     if (!deck || !Array.isArray(deck.main) || !Array.isArray(deck.extra)) return false;
-    if (deck.main.length !== 40) return false;
-    if (deck.extra.length > 6) return false;
+    if (deck.main.length < 20 || deck.main.length > 30) return false;
+    if (deck.extra.length < 6 || deck.extra.length > 10) return false;
     const counts = {};
     for (const id of deck.main) {
       const c = CARDS[id];
@@ -242,7 +242,7 @@
 
   function deckCountLabel(deck) {
     if (!deck) return '';
-    return `${deck.main.length}/40 主卡组 · ${deck.extra.length}/6 额外`;
+    return `${deck.main.length}/30 主卡组 · ${deck.extra.length}/10 额外`;
   }
 
   /* ============================ 开始界面 ============================ */
@@ -273,8 +273,8 @@
         <h3>${esc(d.name || id)}</h3>
         <p>${esc(d.tagline || '')}</p>
         <div class="deck-composition">
-          <span class="${d.main.length === 40 ? '' : 'warn'}">主卡组 ${d.main.length}/40</span>
-          <span class="${d.extra.length <= 6 ? '' : 'warn'}">额外 ${d.extra.length}/6</span>
+          <span class="${d.main.length >= 20 && d.main.length <= 30 ? '' : 'warn'}">主卡组 ${d.main.length}/30</span>
+          <span class="${d.extra.length >= 6 && d.extra.length <= 10 ? '' : 'warn'}">额外 ${d.extra.length}/10</span>
           <span>${esc(d.style || '实验路线')}</span>
           ${legal ? '' : '<span class="warn">未完成</span>'}
         </div>
@@ -315,7 +315,7 @@
     const legal = isDeckLegal(selectedDeck);
     if (btn) {
       btn.disabled = !selectedDeck || !legal || !S.playerChemist;
-      btn.title = !selectedDeck ? '请选择卡组' : !legal ? '当前卡组未完成：需要 40 张主卡组，额外最多 6 张' : '';
+      btn.title = !selectedDeck ? '请选择卡组' : !legal ? '当前卡组未完成：需要 20–30 张主卡组、6–10 张额外卡组' : '';
     }
   }
 
@@ -338,7 +338,7 @@
     const pd = deckById(S.playerDeck), ad = DECKS[aiDeck];
     const pc = CHEMISTS[S.playerChemist], ac = CHEMISTS[aiChemistId];
     if (!pd || !ad) { toast('卡组数据缺失。'); return; }
-    if (!isDeckLegal(pd)) { toast('当前卡组未完成：需要 40 张主卡组，额外最多 6 张。'); return; }
+    if (!isDeckLegal(pd)) { toast('当前卡组未完成：需要 20–30 张主卡组、6–10 张额外卡组。'); return; }
     if (!pc || !ac) { toast('化学家数据缺失。'); return; }
     const seed = (Date.now() + Math.floor(Math.random() * 100000)) % 2147483647;
     S.game = new Duel({
@@ -480,6 +480,7 @@
       ? `<button class="btn btn-tiny btn-skill" data-action="skills" ${myTurn ? '' : 'disabled'} title="化学家技能">${chem.icon} 技能${usableSkills ? ` ${usableSkills}` : ''}</button>`
       : '';
     const chips = [];
+    chips.push(`<span class="reaction-chip hot">${g.turn === 1 ? '首回合不抽' : `抽 ${g.drawPerTurn()}`} · 融合 ${g.fusionLimit()}</span>`);
     chips.push('<span class="reaction-chip hot">腐蚀 +800</span>');
     const all = [...g.monsters(0, { faceUp: true }), ...g.monsters(1, { faceUp: true })];
     if (all.some(c => g.hasTag(c, '酸')) && all.some(c => g.hasTag(c, '碱'))) {
@@ -498,7 +499,7 @@
       ${S.pending ? '<button class="btn btn-ghost btn-tiny" data-action="cancel">取消选择</button>' : ''}
       ${skillBtn}
       <button class="btn btn-tiny" data-action="battle" ${canBattle ? '' : 'disabled'} title="${g.turn <= 1 ? '先攻首回合不能攻击' : '进入战斗阶段'}">战斗阶段</button>
-      <button class="btn btn-tiny btn-primary" data-action="fusion" ${myTurn && g.phase === 'main' && fusionCount > 0 ? '' : 'disabled'}>融合召唤 ${fusionCount > 0 ? `(${fusionCount})` : ''}</button>
+      <button class="btn btn-tiny btn-primary" data-action="fusion" ${myTurn && g.phase === 'main' && fusionCount > 0 ? '' : 'disabled'} title="本回合融合 ${g.fusionUsed}/${g.fusionLimit()}">融合召唤 ${fusionCount > 0 ? `(${fusionCount})` : ''}</button>
       <button class="btn btn-tiny" data-action="end" ${endDisabled ? 'disabled' : ''}>结束回合</button>
     </div>`;
   }
@@ -962,16 +963,16 @@
       </div>
       <aside class="builder-deck">
         <div class="builder-deck-head">
-          <div><b>主卡组</b><span class="${b.main.length === 40 ? 'ok' : 'warn'}">${b.main.length}/40</span></div>
+          <div><b>主卡组</b><span class="${b.main.length >= 20 && b.main.length <= 30 ? 'ok' : 'warn'}">${b.main.length}/30</span></div>
           <button class="builder-clear" data-builder-clear="main">清空</button>
         </div>
         <div class="builder-list">${builderRows(b.main)}</div>
         <div class="builder-deck-head extra-head">
-          <div><b>额外卡组</b><span class="${b.extra.length <= 6 ? 'ok' : 'warn'}">${b.extra.length}/6</span></div>
+          <div><b>额外卡组</b><span class="${b.extra.length >= 6 && b.extra.length <= 10 ? 'ok' : 'warn'}">${b.extra.length}/10</span></div>
           <button class="builder-clear" data-builder-clear="extra">清空</button>
         </div>
         <div class="builder-list extra-list">${builderRows(b.extra)}</div>
-        <div class="builder-note">主卡组必须正好 40 张；额外卡组 0–6 张；同名卡最多 3 张。融合怪兽只能放入额外卡组。</div>
+        <div class="builder-note">主卡组 20–30 张；额外卡组 6–10 张；同名卡最多 3 张。融合怪兽只能放入额外卡组。</div>
         <div class="builder-actions">
           <button class="btn" data-modal-action="builder-cancel">取消</button>
           <button class="btn ${legal ? 'btn-primary' : ''}" data-modal-action="builder-save" ${legal ? '' : 'disabled'}>保存卡组</button>
@@ -1003,8 +1004,8 @@
     const target = fusion ? b.extra : b.main;
     const total = [...b.main, ...b.extra].filter(x => x === id).length;
     if (total >= 3) { toast('同名卡最多放入 3 张。'); return; }
-    if (fusion && b.extra.length >= 6) { toast('额外卡组最多 6 张。'); return; }
-    if (!fusion && b.main.length >= 40) { toast('主卡组已满 40 张。'); return; }
+    if (fusion && b.extra.length >= 10) { toast('额外卡组最多 10 张。'); return; }
+    if (!fusion && b.main.length >= 30) { toast('主卡组已满 30 张。'); return; }
     target.push(id);
     rerenderBuilder();
   }
@@ -1031,7 +1032,7 @@
     const name = String(b.name || '').trim();
     if (!name) { toast('请给卡组起一个名字。'); return; }
     if (!isDeckLegal(b)) {
-      toast(`卡组尚未完成：主卡组 ${b.main.length}/40，额外 ${b.extra.length}/6。`);
+      toast(`卡组尚未完成：主卡组 ${b.main.length}/30（需 20–30），额外 ${b.extra.length}/10（需 6–10）。`);
       return;
     }
     const deck = sanitizeCustomDeck({ ...b, name, updatedAt: Date.now(), custom: true });
@@ -1116,13 +1117,14 @@
         <h3>胜利条件</h3>
         <ul>
           <li>双方初始 <b>8000 LP</b>。将对方 LP 降至 0，或让对方卡组耗尽无法抽卡，即可获胜。</li>
-          <li>场上各有 <b>5 个怪兽区</b>、<b>5 个魔法／陷阱区</b>、1 个场地魔法区，以及 6 张额外卡组。</li>
+          <li>场上各有 <b>5 个怪兽区</b>、<b>5 个魔法／陷阱区</b>、1 个场地魔法区，以及 6–10 张额外卡组。</li>
         </ul>
       </div>
       <div class="modal-section">
         <h3>回合流程</h3>
         <ul>
-          <li><b>抽卡</b>：回合开始时抽 2 张（先攻第 1 回合不抽）。</li>
+          <li><b>抽卡</b>：先攻第 1 回合不抽；第 2–4 回合抽 1 张，第 5–8 回合抽 2 张，第 9 回合起抽 3 张。</li>
+          <li><b>融合次数</b>：第 1–6 回合 1 次，第 7–12 回合 2 次，第 13 回合起 3 次。</li>
           <li><b>主要阶段</b>：通常召唤／盖放 1 次、发动魔法、盖放陷阱、融合召唤 1 次、改变表示形式。</li>
           <li><b>战斗阶段</b>：每只表侧攻击表示怪兽可攻击 1 次。先攻第 1 回合不能攻击。</li>
           <li><b>结束阶段</b>：处理结束阶段效果，然后交给对手。</li>
@@ -1139,7 +1141,7 @@
       <div class="modal-section">
         <h3>自由构筑</h3>
         <ul>
-          <li>标题界面点击「新建卡组」进入构筑器：主卡组必须正好 40 张，额外卡组 0–6 张，同名卡最多 3 张。</li>
+          <li>标题界面点击「新建卡组」进入构筑器：主卡组 20–30 张，额外卡组 6–10 张，同名卡最多 3 张。</li>
           <li>融合怪兽只能放入额外卡组；自定义卡组保存在浏览器本地，可编辑或删除。</li>
         </ul>
       </div>
@@ -1380,7 +1382,7 @@
         </div>`;
       }).join('')}</div>`;
     }
-    return baseModal('融合召唤', '把标签素材送入墓地，从额外卡组特殊召唤。每回合 1 次。', body,
+    return baseModal('融合召唤', `把标签素材送入墓地，从额外卡组特殊召唤。本回合已用 ${g.fusionUsed}/${g.fusionLimit()} 次。`, body,
       '<button class="btn" data-modal-action="close">取消</button>', { wide: true });
   }
 
