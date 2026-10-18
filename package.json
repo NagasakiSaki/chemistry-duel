@@ -1,0 +1,13 @@
+{
+  "name": "chemistry-duel",
+  "version": "1.0.0",
+  "private": true,
+  "description": "化学怪兽决斗：以《游戏王》为框架的化学主题卡牌对战游戏",
+  "scripts": {
+    "test": "node test/rules.test.js && node test/effects.test.js && node test/chemists.test.js && node test/simulate.js",
+    "simulate": "node test/simulate.js",
+    "cards": "node test/gen-cards.js",
+    "decks": "node test/gen-decks.js",
+    "chemists": "node test/gen-chemists.js"
+  }
+}

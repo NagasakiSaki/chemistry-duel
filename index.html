@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>化学怪兽决斗 · Chemistry Duel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- ============================ 开始界面 ============================ -->
+  <div id="start" class="start-screen">
+    <div class="start-grid-bg"></div>
+    <div class="start-glow glow-a"></div>
+    <div class="start-glow glow-b"></div>
+    <div class="start-inner">
+      <div class="eyebrow"><span class="pulse-dot"></span> CHEMISTRY × CARD DUEL</div>
+      <h1>化学怪兽<span>决斗</span></h1>
+      <p class="lead">把元素与化合物召唤到场上。用反应活性撕裂防线，用难溶沉淀守住 8000 LP。</p>
+      <div class="start-stats">
+        <span>8000 LP</span><i></i><span>5 怪兽区</span><i></i><span>5 魔陷区</span><i></i><span>额外卡组</span>
+      </div>
+
+      <div class="section-label">选择你的实验路线</div>
+      <div id="deck-grid" class="deck-grid"></div>
+
+      <div class="section-label" style="margin-top:22px">选择化学家</div>
+      <div id="chemist-grid" class="chemist-grid"></div>
+
+      <div class="start-actions">
+        <button id="start-btn" class="btn btn-primary btn-xl" disabled>进入实验室</button>
+        <button class="btn btn-ghost btn-xl" data-open-rules>规则手册</button>
+        <button class="btn btn-ghost btn-xl" data-open-pool>全卡池</button>
+      </div>
+      <div class="start-foot">
+        <span>灵感来自《游戏王》的对战框架</span>
+        <span class="dot"></span>
+        <span>ATK = 反应活性 / 腐蚀性</span>
+        <span class="dot"></span>
+        <span>DEF = 化学稳定性 / 难溶性</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ 决斗界面 ============================ -->
+  <div id="game" class="game hidden">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">⚗</span>
+        <span class="brand-name">化学怪兽决斗</span>
+        <span class="brand-sub">CHEM DUEL</span>
+      </div>
+      <div class="topbar-right">
+        <span id="match-status" class="match-status">第 1 回合</span>
+        <button class="btn btn-tiny btn-ghost" data-open-rules>规则</button>
+        <button class="btn btn-tiny btn-ghost" data-open-pool>卡池</button>
+        <button class="btn btn-tiny btn-ghost" data-restart>重开</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="arena">
+        <div id="opp-hud" class="hud"></div>
+        <div id="opp-board" class="board"></div>
+        <div id="turnbar" class="turnbar"></div>
+        <div id="player-board" class="board"></div>
+        <div id="player-hud" class="hud"></div>
+        <div id="player-hand" class="hand"></div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="panel detail-panel">
+          <div class="panel-title"><span>卡牌详情</span><span id="detail-badge" class="panel-badge"></span><button class="detail-close" data-action="close-detail" title="关闭">×</button></div>
+          <div id="detail" class="detail-body"></div>
+        </div>
+        <div class="panel log-panel">
+          <div class="panel-title"><span>实验记录</span><span class="live-dot"></span></div>
+          <div id="log" class="log"></div>
+        </div>
+      </aside>
+    </main>
+  </div>
+
+  <!-- ============================ 通用弹窗 ============================ -->
+  <div id="modal" class="modal"></div>
+  <div id="toast" class="toast"></div>
+
+  <script src="js/engine.js"></script>
+  <script src="js/cards.js"></script>
+  <script src="js/chemists.js"></script>
+  <script src="js/decks.js"></script>
+  <script src="js/content.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/ui.js"></script>
+</body>
+</html>
